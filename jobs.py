@@ -15,4 +15,4 @@ def send_updates(context):
 
 
 def alarm(context):
-    context.bot.send_message(chat_id=context.job.context, text="Сработал будильник!")
+    context.bot.send_message(chat_id=context.job.context, text='Сработал будильник!')

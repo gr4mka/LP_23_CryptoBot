@@ -10,8 +10,9 @@ from telegram.utils.request import Request
 
 from anketa import (anketa_start, anketa_name, anketa_rating, anketa_skip, anketa_comment,
                     anketa_dontknow)
-from handlers import (greet_user,
-                      talk_to_me, subscribe, unsubscribe, set_alarm)
+from handlers import (greet_user, current_info,
+                      talk_to_me, subscribe, unsubscribe, about)#, set_alarm)
+from parse import current                  
 from jobs import send_updates
 import settings
 
@@ -51,10 +52,10 @@ def main():
 #    mybot = Updater(bot=bot, use_context=True)
     mybot = Updater(settings.API_KEY, use_context=True)
 
-    jq = mybot.job_queue
-    target_time = time(12, 0, tzinfo=pytz.timezone('Europe/Moscow'))
+#    jq = mybot.job_queue
+#    target_time = time(12, 0, tzinfo=pytz.timezone('Europe/Moscow'))
 #    target_days = (Days.MON, Days.WED, Days.FRI)
-    jq.run_daily(send_updates, target_time)#, target_days)
+#    jq.run_daily(send_updates, target_time)#, target_days)
 
     dp = mybot.dispatcher
 
@@ -79,9 +80,18 @@ def main():
     )
     dp.add_handler(anketa)
     dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(CommandHandler('registration', anketa_start))
     dp.add_handler(CommandHandler('subscribe', subscribe))
     dp.add_handler(CommandHandler('unsubscribe', unsubscribe))
-    dp.add_handler(CommandHandler('alarm', set_alarm))
+#    dp.add_handler(CommandHandler('alarm', set_alarm))
+    dp.add_handler(CommandHandler('about', about))
+    dp.add_handler(CommandHandler('current', current))
+    dp.add_handler(MessageHandler(Filters.regex('^(Текущий курс валют)$'), current_info))
+    dp.add_handler(MessageHandler(Filters.regex('^(Регистрация)$'), anketa_start))
+    dp.add_handler(MessageHandler(Filters.regex('^(О боте)$'), about))
+    dp.add_handler(MessageHandler(Filters.regex('^(subscribe)$'), subscribe))
+    dp.add_handler(MessageHandler(Filters.regex('^(unsubscribe)$'), unsubscribe))
+
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info("Бот стартовал")
