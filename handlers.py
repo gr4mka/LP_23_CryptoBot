@@ -9,6 +9,7 @@ from utils import main_keyboard
 import settings
 import json
 import pprint
+import dpath.util as dp   #  pip install dpath
 
 def greet_user(update, context):
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
@@ -44,7 +45,7 @@ def current_info(update, context):
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
     parameters = {
     'start': '1',
-    'limit':'150',
+    'limit':'10',
     'convert':'USD'
     }
 
@@ -67,17 +68,18 @@ def current_info(update, context):
 """
             update.message.reply_text(info, parse_mode=ParseMode.HTML)
         pprint.pprint(coins)
-
+#        values = dp.values(coins, "/name/**/symbol")
+#        print(values)
 
 
 
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         print(e)
-"""
+
 def set_alarm(update, context):
     try:
         alarm_seconds = abs(int(context.args[0]))
         context.job_queue.run_once(alarm, alarm_seconds, context=update.message.chat.id)
         update.message.reply_text(f'Уведомление через {alarm_seconds} секунд')
     except (ValueError, TypeError):
-        update.message.reply_text('Введите целое число секунд после команды')"""
+        update.message.reply_text('Введите целое число секунд после команды')
