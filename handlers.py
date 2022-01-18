@@ -1,14 +1,15 @@
 from glob import glob
 import os
+from telegram import ParseMode
 from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 from db import db, get_or_create_user, subscribe_user, unsubscribe_user
 #from jobs import alarm
 from utils import main_keyboard
-from parse import current
 import settings
 import json
 import pprint
+
 def greet_user(update, context):
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     print("Вызван /start")
@@ -42,9 +43,8 @@ def about(update, context):
 def current_info(update, context):
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
     parameters = {
-#    'name': 'Polis',
-    'start':'1',
-    'limit':'1',
+    'start': '1',
+    'limit':'150',
     'convert':'USD'
     }
 
@@ -58,16 +58,26 @@ def current_info(update, context):
 
     try:
         response = session.get(url, params=parameters)
-        data = (json.loads(response.text)['data'],['status'], ['Bitcoin'])
-        update.message.reply_text(f'{data}')
-        pprint.pprint(data)
+        coins = json.loads(response.text)['data']
+        for n in coins:
+            info = f"""<b>Название</b>: {n['name']}
+<b>Символ</b>: {n['symbol']}
+<b>Текущий курс</b>: {n['quote']['USD']['price']}
+<b>Процентное изменение за час:</b>: {n['quote']['USD']['percent_change_1h']}
+"""
+            update.message.reply_text(info, parse_mode=ParseMode.HTML)
+        pprint.pprint(coins)
+
+
+
+
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         print(e)
-
+"""
 def set_alarm(update, context):
     try:
         alarm_seconds = abs(int(context.args[0]))
         context.job_queue.run_once(alarm, alarm_seconds, context=update.message.chat.id)
         update.message.reply_text(f'Уведомление через {alarm_seconds} секунд')
     except (ValueError, TypeError):
-        update.message.reply_text('Введите целое число секунд после команды')
+        update.message.reply_text('Введите целое число секунд после команды')"""

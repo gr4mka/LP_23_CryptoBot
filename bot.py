@@ -8,11 +8,10 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 #from telegram.ext.jobqueue import Days
 from telegram.utils.request import Request
 
-from anketa import (anketa_start, anketa_name, anketa_rating, anketa_skip, anketa_comment,
+from anketa import (anketa_start, anketa_name, anketa_choice, anketa_skip, anketa_comment,
                     anketa_dontknow)
 from handlers import (greet_user, current_info,
-                      talk_to_me, subscribe, unsubscribe, about)#, set_alarm)
-from parse import current                  
+                      talk_to_me, subscribe, unsubscribe, about)#, set_alarm)                
 from jobs import send_updates
 import settings
 
@@ -61,11 +60,12 @@ def main():
 
     anketa = ConversationHandler(
         entry_points=[
-            MessageHandler(Filters.regex('^(Заполнить анкету)$'), anketa_start)
+            MessageHandler(Filters.regex('^(Регистрация)$'), anketa_start)
         ],
         states={
             "name": [MessageHandler(Filters.text, anketa_name)],
-            "rating": [MessageHandler(Filters.regex('^(1|2|3|4|5)$'), anketa_rating)],
+            "choice": [MessageHandler(Filters.regex('^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Cordano ADA|Solana SOL|Ввести свое значение|Список допустимых значений)$'), anketa_choice)],
+ #           '^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Cordano ADA|Solana SOL|Ввести свое значение|Список допустимых значений)$'
             "comment": [
                 CommandHandler("skip", anketa_skip),
                 MessageHandler(Filters.text, anketa_comment)
@@ -85,7 +85,7 @@ def main():
     dp.add_handler(CommandHandler('unsubscribe', unsubscribe))
 #    dp.add_handler(CommandHandler('alarm', set_alarm))
     dp.add_handler(CommandHandler('about', about))
-    dp.add_handler(CommandHandler('current', current))
+    dp.add_handler(CommandHandler('current', current_info))
     dp.add_handler(MessageHandler(Filters.regex('^(Текущий курс валют)$'), current_info))
     dp.add_handler(MessageHandler(Filters.regex('^(Регистрация)$'), anketa_start))
     dp.add_handler(MessageHandler(Filters.regex('^(О боте)$'), about))

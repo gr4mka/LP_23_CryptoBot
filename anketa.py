@@ -30,7 +30,7 @@ def anketa_name(update, context):
         return 'choice'
 
 
-def anketa_rating(update, context):
+def anketa_choice(update, context):
     context.user_data['anketa']['choice'] = str(update.message.text)
     update.message.reply_text('Напишите комментарий, или нажмите /skip чтобы пропустить')
     return 'comment'
@@ -56,7 +56,7 @@ def anketa_skip(update, context):
 
 def format_anketa(anketa):
     user_text = f"""<b>Имя Фамилия</b>: {anketa['name']}
-<b>Оценка</b>: {anketa['choice']}
+<b>Интересующая валюта</b>: {anketa['choice']}
 """
     if 'comment' in anketa:
         user_text += f"\n<b>Комментарий</b>: {anketa['comment']}"
