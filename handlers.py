@@ -83,3 +83,4 @@ def set_alarm(update, context):
         update.message.reply_text(f'Уведомление через {alarm_seconds} секунд')
     except (ValueError, TypeError):
         update.message.reply_text('Введите целое число секунд после команды')
+        
