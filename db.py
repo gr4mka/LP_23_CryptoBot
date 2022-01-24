@@ -36,6 +36,20 @@ def save_anketa(db, user_id, anketa_data):
             {'$push': {'anketa': anketa_data}}
         )
 
+def save_cryptoparams(db, user_id, cryptoparams_data):
+    user = db.users.find_one({"user_id": user_id})
+    cryptoparams_data['created'] = datetime.now()
+    if 'cryptoparams' not in user:
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$set': {'cryptoparams': [cryptoparams_data]}}
+        )
+    else:
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$push': {'anketa': anketa_data}}
+        )
+
 
 def subscribe_user(db, user_data):
     if not user_data.get('subscribed'):

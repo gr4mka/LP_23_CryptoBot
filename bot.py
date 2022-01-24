@@ -10,6 +10,8 @@ from telegram.utils.request import Request
 
 from anketa import (anketa_start, anketa_name, anketa_choice, anketa_skip, anketa_comment,
                     anketa_dontknow)
+from cryptoparams import (cryptoparams_name, cryptoparams_start, cryptoparams_choice,
+                     cryptoparams_comment, cryptoparams_skip, cryptoparams_dontknow)
 from handlers import (greet_user, current_info,
                       talk_to_me, subscribe, unsubscribe, about)#, set_alarm)                
 from jobs import send_updates
@@ -60,7 +62,7 @@ def main():
         ],
         states={
             "name": [MessageHandler(Filters.text, anketa_name)],
-            "choice": [MessageHandler(Filters.regex('^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Cordano ADA|Solana SOL|Ввести свое значение|Список допустимых значений)$'), anketa_choice)],
+            "choice": [MessageHandler(Filters.regex('^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Cordano ADA|Solana SOL)$'), anketa_choice)],
             "comment": [
                 CommandHandler("skip", anketa_skip),
                 MessageHandler(Filters.text, anketa_comment)
@@ -73,15 +75,38 @@ def main():
             )
         ]
     )
+    cryptoparams = ConversationHandler(
+        entry_points=[
+            MessageHandler(Filters.regex('^(Регистрация)$'), cryptoparams_start)
+        ],
+        states={
+            "name": [MessageHandler(Filters.text, cryptoparams_name)],
+            "choice": [MessageHandler(Filters.regex('^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Lightcoin LTC|Dogecoin DOGE)$'), cryptoparams_choice)],
+            "comment": [
+                CommandHandler("skip", cryptoparams_skip),
+                MessageHandler(Filters.text, cryptoparams_comment)
+            ]
+        },
+        fallbacks=[
+            MessageHandler(
+                Filters.text | Filters.photo | Filters.video | Filters.document | Filters.location,
+                cryptoparams_dontknow
+            )
+        ]
+    )
+    
     dp.add_handler(anketa)
+    dp.add_handler(cryptoparams)
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler('registration', anketa_start))
     dp.add_handler(CommandHandler('subscribe', subscribe))
     dp.add_handler(CommandHandler('unsubscribe', unsubscribe))
 #    dp.add_handler(CommandHandler('alarm', set_alarm))
     dp.add_handler(CommandHandler('about', about))
-    dp.add_handler(CommandHandler('current', current_info))
-    dp.add_handler(MessageHandler(Filters.regex('^(Текущий курс валют)$'), current_info))
+    dp.add_handler(CommandHandler('top10', current_info))
+    dp.add_handler(CommandHandler('crypto', cryptoparams_start))
+    dp.add_handler(MessageHandler(Filters.regex('^(ТОП-10 криптовалют)$'), current_info))
+    dp.add_handler(MessageHandler(Filters.regex('^(Ввести данные для выборки)$'), cryptoparams_start))
     dp.add_handler(MessageHandler(Filters.regex('^(Регистрация)$'), anketa_start))
     dp.add_handler(MessageHandler(Filters.regex('^(О боте)$'), about))
     dp.add_handler(MessageHandler(Filters.regex('^(subscribe)$'), subscribe))

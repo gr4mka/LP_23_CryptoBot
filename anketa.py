@@ -6,7 +6,7 @@ from utils import main_keyboard
 
 def anketa_start(update, context):
     update.message.reply_text(
-        'Здравствуйте! Как к Вам обращаться?',
+        'Здравствуйте! Как к Вам обращаться? (Введите имя и фамилию)',
         reply_markup=ReplyKeyboardRemove()
     )
     return 'name'
@@ -15,14 +15,12 @@ def anketa_start(update, context):
 def anketa_name(update, context):
     user_name = update.message.text
     if len(user_name.split()) < 2:
-        update.message.reply_text('Пожалуйста введите имя и фамилию')
+        update.message.reply_text('Пожалуйста, введите имя и фамилию')
         return 'name'
     else:
         context.user_data['anketa'] = {'name': user_name}
         reply_keyboard = [['Bitcoin BTC', 'Etherium ETH', 'BNB BNB'],
-                         ['Tether USDT', 'Cordano ADA', 'Solana SOL'],
-                         ['Ввести свое значение'],
-                         ['Список допустимых значений']]
+                         ['Tether USDT', 'Cordano ADA', 'Solana SOL']]
         update.message.reply_text(
             'Выберите интресующую Вас криптовалюту',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -32,7 +30,7 @@ def anketa_name(update, context):
 
 def anketa_choice(update, context):
     context.user_data['anketa']['choice'] = str(update.message.text)
-    update.message.reply_text('Напишите комментарий, или нажмите /skip чтобы пропустить')
+    update.message.reply_text('Напишите комментарий, или выберите /skip, чтобы пропустить')
     return 'comment'
 
 
