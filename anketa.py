@@ -6,7 +6,7 @@ from utils import main_keyboard
 
 def anketa_start(update, context):
     update.message.reply_text(
-        'Здравствуйте! Как к Вам обращаться? (Введите имя и фамилию)',
+        'Здравствуйте! Как к Вам обращаться? (Введите имя, без цифр и символов)',
         reply_markup=ReplyKeyboardRemove()
     )
     return 'name'
@@ -14,19 +14,28 @@ def anketa_start(update, context):
 
 def anketa_name(update, context):
     user_name = update.message.text
-    if len(user_name.split()) < 2:
-        update.message.reply_text('Пожалуйста, введите имя и фамилию')
+    if str.isalpha(user_name) is False:
+        update.message.reply_text('Пожалуйста, введите Ваше имя(только текст)')
         return 'name'
     else:
         context.user_data['anketa'] = {'name': user_name}
         reply_keyboard = [['Bitcoin BTC', 'Etherium ETH', 'BNB BNB'],
-                         ['Tether USDT', 'Cordano ADA', 'Solana SOL']]
+                         ['Tether USDT', 'Lightcoin LTC', 'Dogecoin DOGE'],
+                         ['help']]
         update.message.reply_text(
-            'Выберите интресующую Вас криптовалюту',
+            'Выберите интресующую Вас криптовалюту, либо ипользуйте /help для вывода всех доступных криптовалют',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
         return 'choice'
 
+def crypto_help(update, context):
+        reply_keyboard = [['Bitcoin BTC', 'Etherium ETH', 'BNB BNB'],
+                         ['Tether USDT', 'Lightcoin LTC', 'Dogecoin DOGE'],
+                         ['help']]
+        update.message.reply_text(
+            'ААААААААААААААААААААААААААААА',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
 
 def anketa_choice(update, context):
     context.user_data['anketa']['choice'] = str(update.message.text)
@@ -53,7 +62,7 @@ def anketa_skip(update, context):
 
 
 def format_anketa(anketa):
-    user_text = f"""<b>Имя Фамилия</b>: {anketa['name']}
+    user_text = f"""<b>Имя Пользователя</b>: {anketa['name']}
 <b>Интересующая валюта</b>: {anketa['choice']}
 """
     if 'comment' in anketa:

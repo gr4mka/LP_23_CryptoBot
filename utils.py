@@ -4,8 +4,9 @@ import settings
 
 def main_keyboard():
     return ReplyKeyboardMarkup([
-        ['Регистрация'], 
-        ['ТОП-10 криптовалют', 'Ввести данные для выборки'],
+        ['Ввести пользовательские данные'], 
+        ['ТОП-10 криптовалют'],
+        ['subscribe','unsubscribe'],
         ['О боте']
     ])
     

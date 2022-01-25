@@ -63,7 +63,7 @@ def current_info(update, context):
         for n in coins:
             info = f"""<b>Название</b>: {n['name']}
 <b>Символ</b>: {n['symbol']}
-<b>Текущий курс</b>: {n['quote']['USD']['price']}
+<b>Текущий курс ($)</b>: {n['quote']['USD']['price']}
 <b>Процентное изменение за час:</b>: {n['quote']['USD']['percent_change_1h']}
 """
             update.message.reply_text(info, parse_mode=ParseMode.HTML)
@@ -75,7 +75,7 @@ def current_info(update, context):
 
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         print(e)
-
+"""
 def set_alarm(update, context):
     try:
         alarm_seconds = abs(int(context.args[0]))
@@ -83,4 +83,4 @@ def set_alarm(update, context):
         update.message.reply_text(f'Уведомление через {alarm_seconds} секунд')
     except (ValueError, TypeError):
         update.message.reply_text('Введите целое число секунд после команды')
-        
+"""        
