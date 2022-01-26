@@ -15,6 +15,7 @@ from handlers import (greet_user, current_info,
                       talk_to_me, subscribe, unsubscribe, about)#, set_alarm)  
 
 from jobs import send_updates
+from par import get_help_dict
 import settings
 
 logging.basicConfig(filename="bot.log", level=logging.INFO)
@@ -62,10 +63,20 @@ def main():
         ],
         states={
             "name": [MessageHandler(Filters.text, anketa_name)],
-            "choice": [CommandHandler("help", crypto_help),
-                MessageHandler(Filters.regex('^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Lightcoin LTC|Dogecoin DOGE)$'), anketa_choice)],
+            "choice": [
+                CommandHandler('help', crypto_help),
+                MessageHandler(Filters.regex('^(help)$'), crypto_help),
+                MessageHandler(Filters.text, anketa_choice),
+                MessageHandler(Filters.regex('^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Lightcoin LTC|Dogecoin DOGE)$'), anketa_choice),
+                ],
+            "time": [
+                CommandHandler('help', crypto_help),
+                MessageHandler(Filters.regex('^(help)$'), crypto_help),
+                MessageHandler(Filters.text, anketa_choice),
+                MessageHandler(Filters.regex('^(Bitcoin BTC|Etherium ETH|BNB BNB|Tether USDT|Lightcoin LTC|Dogecoin DOGE)$'), anketa_choice),
+                ],
             "comment": [
-                CommandHandler("skip", anketa_skip),
+                CommandHandler('skip', anketa_skip),
                 MessageHandler(Filters.text, anketa_comment)
             ]
         },
