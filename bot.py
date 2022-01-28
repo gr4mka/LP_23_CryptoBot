@@ -14,7 +14,7 @@ from anketa import (anketa_start, anketa_name, crypto_help, anketa_choice, anket
 from handlers import (greet_user, current_info,
                       talk_to_me, subscribe, unsubscribe, about)#, set_alarm)  
 
-from predict import predict_start, predict_open, predict_dontknow, predict_high, predict_low, predict_volume, predict_vwap, predict_result
+from predict import predict_start, predict_open, predict_dontknow, predict_high, predict_low, predict_close, predict_volume, predict_vwap, predict_result
 
 from jobs import send_updates
 from par import get_help_dict
@@ -92,6 +92,7 @@ def main():
             "open": [MessageHandler(Filters.text, predict_open)],
             "high": [MessageHandler(Filters.text, predict_high)],
             "low": [MessageHandler(Filters.text, predict_low)],
+            "close": [MessageHandler(Filters.text, predict_close)],
             "volume": [MessageHandler(Filters.text, predict_volume)],
             "vwap": [MessageHandler(Filters.text, predict_vwap)],
             "result": [MessageHandler(Filters.text, predict_result)]
