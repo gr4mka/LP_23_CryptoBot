@@ -1,12 +1,12 @@
 from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
-from db import db, get_or_create_user, save_anketa
+from db import db, get_or_create_user, save_anketa, save_predict
 from utils import main_keyboard
-
+from par import get_help_dict
 
 def anketa_start(update, context):
     update.message.reply_text(
-        'Здравствуйте! Как к Вам обращаться?',
+        'Здравствуйте! Как к Вам обращаться? (Введите имя, без цифр и символов)',
         reply_markup=ReplyKeyboardRemove()
     )
     return 'name'
@@ -14,21 +14,29 @@ def anketa_start(update, context):
 
 def anketa_name(update, context):
     user_name = update.message.text
-    if len(user_name.split()) < 2:
-        update.message.reply_text('Пожалуйста введите имя и фамилию')
+    if str.isalpha(user_name) is False:
+        update.message.reply_text('Пожалуйста, введите Ваше имя(только текст)')
         return 'name'
     else:
         context.user_data['anketa'] = {'name': user_name}
         reply_keyboard = [['Bitcoin BTC', 'Etherium ETH', 'BNB BNB'],
-                         ['Tether USDT', 'Cordano ADA', 'Solana SOL'],
-                         ['Ввести свое значение'],
-                         ['Список допустимых значений']]
+                         ['Tether USDT', 'Lightcoin LTC', 'Dogecoin DOGE'],
+                         ['help']]
         update.message.reply_text(
-            'Выберите интресующую Вас криптовалюту',
+            'Выберите интресующую Вас криптовалюту, либо ипользуйте /help для вывода всех доступных криптовалют',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
         return 'choice'
 
+def crypto_help(update, context):
+        reply_keyboard = [['Bitcoin BTC', 'Etherium ETH', 'BNB BNB'],
+                         ['Tether USDT', 'Lightcoin LTC', 'Dogecoin DOGE'],
+                         ['help']]
+        update.message.reply_text(
+            get_help_dict(),
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
+        return 'choice'
 
 def anketa_choice(update, context):
     context.user_data['anketa']['choice'] = str(update.message.text)

@@ -36,6 +36,19 @@ def save_anketa(db, user_id, anketa_data):
             {'$push': {'anketa': anketa_data}}
         )
 
+def save_predict(db, user_id, predict_data):
+    user = db.users.find_one({"user_id": user_id})
+    predict_data['created'] = datetime.now()
+    if 'predict' not in user:
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$set': {'predict': [predict_data]}}
+        )
+    else:
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$push': {'predict': predict_data}}
+        )
 
 def subscribe_user(db, user_data):
     if not user_data.get('subscribed'):
