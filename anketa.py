@@ -1,6 +1,6 @@
 from telegram import ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
-from db import db, get_or_create_user, save_anketa
+from db import db, get_or_create_user, save_anketa, save_predict
 from utils import main_keyboard
 from par import get_help_dict
 
@@ -36,22 +36,13 @@ def crypto_help(update, context):
             get_help_dict(),
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
-
-def anketa_time(update, context):
-        reply_keyboard = [['5 минут', '10 минут', '15 минут'],
-                         ['30 миут', '1 час', '1 день'],
-                         ['help']]
-        update.message.reply_text(
-            get_help_dict(),
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
-        )
-        update.message.reply_text('Напишите комментарий, или выберите /skip, чтобы пропустить')
-        return 'time'
+        return 'choice'
 
 def anketa_choice(update, context):
     context.user_data['anketa']['choice'] = str(update.message.text)
-    update.message.reply_text('Напишите комментарий, или выберите /skip, чтобы пропустить')
+    update.message.reply_text('Напишите комментарий, или нажмите /skip чтобы пропустить')
     return 'comment'
+
 
 def anketa_comment(update, context):
     context.user_data['anketa']['comment'] = update.message.text
@@ -72,7 +63,7 @@ def anketa_skip(update, context):
 
 
 def format_anketa(anketa):
-    user_text = f"""<b>Имя Пользователя</b>: {anketa['name']}
+    user_text = f"""<b>Имя Фамилия</b>: {anketa['name']}
 <b>Интересующая валюта</b>: {anketa['choice']}
 """
     if 'comment' in anketa:

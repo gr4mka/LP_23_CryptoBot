@@ -31,5 +31,6 @@ def get_help_dict():
     ab = []
     for n in coins:
             ab.append(n['name']+' '+n['symbol'])
+#   ab = "".join(ab)
     print(ab)
     return ab
